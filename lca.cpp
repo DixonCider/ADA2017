@@ -1,0 +1,23 @@
+#include <stdlib.h>
+#include <iostream>
+#include <string.h>
+using namespace std;
+
+int fl(int* A, int size_A, int* B, int size_B){
+	int dp[size_B+1] = {0};
+	int MAX = 0;
+	for(int i=0;i<size_A;i++){
+		for(int j=size_B-1;j>=0;j--){
+			MAX = max(MAX, dp[j+1] = A[i] == B[j] ? dp[j]+1 : 0);
+		}
+	}
+	return MAX;
+}	
+
+int main(){
+	int A[10] = {1,2,3,4,5};
+	int B[3] = {2,3,4};
+	int a = sizeof(A)/sizeof(A[0]);
+	int b = sizeof(B)/sizeof(B[0]);
+	cout << fl(A,a,B,b) << endl;
+}

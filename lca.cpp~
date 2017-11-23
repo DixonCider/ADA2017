@@ -19,5 +19,5 @@ int main(){
 	int B[3] = {2,3,4};
 	int a = sizeof(A)/sizeof(A[0]);
 	int b = sizeof(B)/sizeof(B[0]);
-	fl(A,a,B,b);
+	cout << fl(A,a,B,b) << endl;
 }

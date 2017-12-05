@@ -2,8 +2,8 @@
 #include <list>
 #include <vector>
 #include <utility>
-#include <climits>
 #include <queue>
+#define ULLMAX 18446744073709551615
 using namespace std;
 class myComparator
 {
@@ -20,6 +20,7 @@ int main(){
 	
 	int n,m,s,t,tmp1,tmp2,tmp3;
 	unsigned long long TOTAL_WEIGHT = 0;
+	
 	cin >> n >> m >> s >> t;	// n: # of nodes, m: # of edges, s to t
 	s--;t--;
 	vector< list< pair<int,int> > >Alist(n);
@@ -29,17 +30,15 @@ int main(){
 		TOTAL_WEIGHT += tmp3;
 		Alist[tmp1-1].push_back(make_pair(tmp2-1,tmp3));
 		Alist[tmp2-1].push_back(make_pair(tmp1-1,tmp3));
-		// cout << (*Alist[tmp1-1].begin()).first << " " << (*Alist[tmp1-1].begin()).second << endl;
 	}
-	//vector< list< pair<int,int> > > new_v = Alist;
-	//cout << (*new_v[0].begin()).first;
-	unsigned long long dist[300000] = {0};
-	bool isQ[300000] = {0};
+
+	unsigned long long dist[300001] = {0};
+	bool isQ[300001] = {0};
 	priority_queue< pair<int,unsigned long long>, vector<pair<int,unsigned long long> >, myComparator > pq;
 	
 	pq.push(make_pair(s,dist[s]));
 	isQ[s] = 1;
-	for(int i=0;i<n;i++) if(i!=s) dist[i] = ULLONG_MAX;
+	for(int i=0;i<n;i++) if(i!=s) dist[i] = ULLMAX;
 	
 	while(!pq.empty()){
 		pair<int,unsigned long long> u = pq.top();
@@ -47,16 +46,18 @@ int main(){
 		list< pair<int, int> >::iterator itr = Alist[u.first].begin();		         
 		while (itr != Alist[u.first].end()) {
 			unsigned long long neW = dist[u.first] + (*itr).second;
-			if(neW < dist[(*itr).first]){
-				dist[(*itr).first] = neW;
-				if(isQ[(*itr).first]==0){
-					isQ[(*itr).first] = 1;
-					pq.push(make_pair((*itr).first,dist[(*itr).first]));
+			int v = (*itr).first;
+			if(neW < dist[v]){
+				dist[v] = neW;
+				if(isQ[v]==0){
+					isQ[v] = 1;
+					pq.push(make_pair(v,dist[v]));
 				}
 			}
 			++itr;
 		}
 	}
-
-	cout << TOTAL_WEIGHT - dist[t] << endl;
+	if(dist[t]>TOTAL_WEIGHT) cout << "-1";
+	else cout << TOTAL_WEIGHT - dist[t];
+	cout << endl;
 }

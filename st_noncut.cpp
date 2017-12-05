@@ -19,19 +19,20 @@ public:
 int main(){
 	ios::sync_with_stdio(0);
 	cin.tie(0);
-	int n,m,s,t,tmp1,tmp2,tmp3;
-	unsigned long long TOTAL_WEIGHT = 0;
 	
+	unsigned long long TOTAL_WEIGHT = 0;
+	int n,m,s,t;
 	cin >> n >> m >> s >> t;	// n: # of nodes, m: # of edges, s to t
 	s--;t--;
 	vector< list< pair<int,int> > >Alist(n);
 	
 	for(int i=0;i<m;i++){
-		cin >> tmp1 >> tmp2 >> tmp3;
-		TOTAL_WEIGHT += tmp3;
-		tmp1--;tmp2--;	// array starts from zero, but node start from 1
-		Alist[tmp1].push_back(make_pair(tmp2,tmp3));
-		Alist[tmp2].push_back(make_pair(tmp1,tmp3));
+		int u,v,weight;
+		cin >> u >> v >> weight;
+		TOTAL_WEIGHT += weight;
+		u--;v--;	// array starts from zero, but node start from 1
+		Alist[u].push_back(make_pair(v,weight));
+		Alist[v].push_back(make_pair(u,weight));
 	}
 
 	bool isQ[300001] = {0};

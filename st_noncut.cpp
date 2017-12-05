@@ -5,12 +5,14 @@
 #include <queue>
 #define ULLMAX 18446744073709551615
 using namespace std;
+
+unsigned long long dist[300001] = {0};
 class myComparator
 {
 public:
-    int operator() (const pair<int,unsigned long long>& p1, const pair<int,unsigned long long>& p2)
+    int operator() (const int& p1, const int& p2)
     {
-        return p1.second > p2.second;
+        return dist[p1] > dist[p2];
     }
 };
 
@@ -32,26 +34,25 @@ int main(){
 		Alist[tmp2-1].push_back(make_pair(tmp1-1,tmp3));
 	}
 
-	unsigned long long dist[300001] = {0};
 	bool isQ[300001] = {0};
-	priority_queue< pair<int,unsigned long long>, vector<pair<int,unsigned long long> >, myComparator > pq;
+	priority_queue<int, vector<int>, myComparator > pq;
 	
-	pq.push(make_pair(s,dist[s]));
+	pq.push(s);
 	isQ[s] = 1;
 	for(int i=0;i<n;i++) if(i!=s) dist[i] = ULLMAX;
 	
 	while(!pq.empty()){
-		pair<int,unsigned long long> u = pq.top();
+		int u = pq.top();
 		pq.pop();
-		list< pair<int, int> >::iterator itr = Alist[u.first].begin();		         
-		while (itr != Alist[u.first].end()) {
-			unsigned long long neW = dist[u.first] + (*itr).second;
+		list< pair<int, int> >::iterator itr = Alist[u].begin();		         
+		while (itr != Alist[u].end()) {
+			unsigned long long neW = dist[u] + (*itr).second;
 			int v = (*itr).first;
 			if(neW < dist[v]){
 				dist[v] = neW;
 				if(isQ[v]==0){
 					isQ[v] = 1;
-					pq.push(make_pair(v,dist[v]));
+					pq.push(v);
 				}
 			}
 			++itr;

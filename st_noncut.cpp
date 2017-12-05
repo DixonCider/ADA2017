@@ -19,7 +19,6 @@ public:
 int main(){
 	ios::sync_with_stdio(0);
 	cin.tie(0);
-	
 	int n,m,s,t,tmp1,tmp2,tmp3;
 	unsigned long long TOTAL_WEIGHT = 0;
 	
@@ -30,8 +29,9 @@ int main(){
 	for(int i=0;i<m;i++){
 		cin >> tmp1 >> tmp2 >> tmp3;
 		TOTAL_WEIGHT += tmp3;
-		Alist[tmp1-1].push_back(make_pair(tmp2-1,tmp3));
-		Alist[tmp2-1].push_back(make_pair(tmp1-1,tmp3));
+		tmp1--;tmp2--;	// array starts from zero, but node start from 1
+		Alist[tmp1].push_back(make_pair(tmp2,tmp3));
+		Alist[tmp2].push_back(make_pair(tmp1,tmp3));
 	}
 
 	bool isQ[300001] = {0};
@@ -46,10 +46,11 @@ int main(){
 		pq.pop();
 		list< pair<int, int> >::iterator itr = Alist[u].begin();		         
 		while (itr != Alist[u].end()) {
-			unsigned long long neW = dist[u] + (*itr).second;
 			int v = (*itr).first;
-			if(neW < dist[v]){
-				dist[v] = neW;
+			int dist_uv = (*itr).second;
+			unsigned long long new_distV = dist[u] + dist_uv;
+			if(new_distV < dist[v]){
+				dist[v] = new_distV;
 				if(isQ[v]==0){
 					isQ[v] = 1;
 					pq.push(v);
@@ -58,7 +59,7 @@ int main(){
 			++itr;
 		}
 	}
-	if(dist[t]>TOTAL_WEIGHT) cout << "-1";
+	if(dist[t]==ULLMAX) cout << "-1";
 	else cout << TOTAL_WEIGHT - dist[t];
 	cout << endl;
 }

@@ -10,13 +10,13 @@ char ary[3000][3000] = {0};
 int dist[3000][3000] = {0};
 int pIndex[100000] = {0};
 bool visited[3000][3000] = {0};
-vector< queue<int> >bfsQ;
+queue<int> bfsQ;
 
 int main(){
 	ios::sync_with_stdio(0);
 	cin.tie(0);
 	
-	int row,column,eCnt=0,pCnt=0;
+	int row,column,pCnt=0;
 	//input
 	cin >> row >> column;
 	for(int i=0;i<row;++i) 
@@ -24,9 +24,7 @@ int main(){
 			cin >> ary[i][j];
 			dist[i][j] = INT_MAX;
 			if(ary[i][j]=='E'){
-				bfsQ.push_back(queue<int>());
-				bfsQ[eCnt].push(i*column + j);
-				++eCnt;
+				bfsQ.push(i*column + j);
 				dist[i][j] = 0;
 			}
 			else if(ary[i][j]=='P'){
@@ -35,36 +33,33 @@ int main(){
 			}
 		}
 	// index = i*column + j
-	for(int i=0;i<eCnt;i++){
-		memset(visited, 0, sizeof(visited));	//reset visited
-		visited[bfsQ[i].front()/column][bfsQ[i].front()%column] = 1;
-		while(!bfsQ[i].empty()){
-			int px = bfsQ[i].front()/column;
-			int py = bfsQ[i].front()%column;
-			int d = dist[px][py];
-			bfsQ[i].pop();
+	visited[bfsQ.front()/column][bfsQ.front()%column] = 1;
+	while(!bfsQ.empty()){
+		int px = bfsQ.front()/column;
+		int py = bfsQ.front()%column;
+		int d = dist[px][py];
+		bfsQ.pop();
 
-			// in border + not visited + better distance		
-			if(px-1>=0 && visited[px-1][py]==0 && ary[px-1][py]!='F' && dist[px-1][py]>d){
-				visited[px-1][py] = 1;
-				dist[px-1][py] = d + 1;
-				bfsQ[i].push((px-1)*column+py);
-			}
-			if(px+1<column && visited[px+1][py]==0 && ary[px+1][py]!='F' && dist[px+1][py]>d){
-				visited[px+1][py] = 1;
-				dist[px+1][py] = d + 1;
-				bfsQ[i].push((px+1)*column+py);
-			}
-			if(py-1>=0 && visited[px][py-1]==0 && ary[px][py-1]!='F' && dist[px][py-1]>d){
-				visited[px][py-1] = 1;
-				dist[px][py-1] = d + 1;
-				bfsQ[i].push(px*column+py-1);
-			}
-			if(py+1<row && visited[px][py+1]==0 && ary[px][py+1]!='F' && dist[px][py+1]>d){
-				visited[px][py+1] = 1;
-				dist[px][py+1] = d + 1;
-				bfsQ[i].push(px*column+py+1);
-			}
+		// in border + not visited + better distance		
+		if(px-1>=0 && visited[px-1][py]==0 && ary[px-1][py]!='F' && dist[px-1][py]>d){
+			visited[px-1][py] = 1;
+			dist[px-1][py] = d + 1;
+			bfsQ.push((px-1)*column+py);
+		}
+		if(px+1<column && visited[px+1][py]==0 && ary[px+1][py]!='F' && dist[px+1][py]>d){
+			visited[px+1][py] = 1;
+			dist[px+1][py] = d + 1;
+			bfsQ.push((px+1)*column+py);
+		}
+		if(py-1>=0 && visited[px][py-1]==0 && ary[px][py-1]!='F' && dist[px][py-1]>d){
+			visited[px][py-1] = 1;
+			dist[px][py-1] = d + 1;
+			bfsQ.push(px*column+py-1);
+		}
+		if(py+1<row && visited[px][py+1]==0 && ary[px][py+1]!='F' && dist[px][py+1]>d){
+			visited[px][py+1] = 1;
+			dist[px][py+1] = d + 1;
+			bfsQ.push(px*column+py+1);
 		}
 	}
 	for(int i=0;i<pCnt;i++){

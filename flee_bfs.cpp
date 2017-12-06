@@ -1,8 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <utility>
 #include <queue>
-#include <string.h>
 #include <climits>
 using namespace std;
 
@@ -26,6 +24,7 @@ int main(){
 			if(ary[i][j]=='E'){
 				bfsQ.push(i*column + j);
 				dist[i][j] = 0;
+				visited[i][j] = 1;
 			}
 			else if(ary[i][j]=='P'){
 				pIndex[pCnt] = i*column + j;
@@ -33,20 +32,19 @@ int main(){
 			}
 		}
 	// index = i*column + j
-	visited[bfsQ.front()/column][bfsQ.front()%column] = 1;
 	while(!bfsQ.empty()){
 		int px = bfsQ.front()/column;
 		int py = bfsQ.front()%column;
 		int d = dist[px][py];
 		bfsQ.pop();
 
-		// in border + not visited + better distance		
+		// in border + not visited + not fire + better distance		
 		if(px-1>=0 && visited[px-1][py]==0 && ary[px-1][py]!='F' && dist[px-1][py]>d){
 			visited[px-1][py] = 1;
 			dist[px-1][py] = d + 1;
 			bfsQ.push((px-1)*column+py);
 		}
-		if(px+1<column && visited[px+1][py]==0 && ary[px+1][py]!='F' && dist[px+1][py]>d){
+		if(px+1<row && visited[px+1][py]==0 && ary[px+1][py]!='F' && dist[px+1][py]>d){
 			visited[px+1][py] = 1;
 			dist[px+1][py] = d + 1;
 			bfsQ.push((px+1)*column+py);
@@ -56,7 +54,7 @@ int main(){
 			dist[px][py-1] = d + 1;
 			bfsQ.push(px*column+py-1);
 		}
-		if(py+1<row && visited[px][py+1]==0 && ary[px][py+1]!='F' && dist[px][py+1]>d){
+		if(py+1<column && visited[px][py+1]==0 && ary[px][py+1]!='F' && dist[px][py+1]>d){
 			visited[px][py+1] = 1;
 			dist[px][py+1] = d + 1;
 			bfsQ.push(px*column+py+1);

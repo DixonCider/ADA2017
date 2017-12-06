@@ -45,27 +45,31 @@ int main(){
 			bfsQ[i].pop();
 
 			// in border + not visited + better distance		
-			if(px-1>=0 && visited[px-1][py]==0 && dist[px-1][py]>d){
+			if(px-1>=0 && visited[px-1][py]==0 && ary[px-1][py]!='F' && dist[px-1][py]>d){
 				visited[px-1][py] = 1;
 				dist[px-1][py] = d + 1;
 				bfsQ[i].push((px-1)*column+py);
 			}
-			if(px+1<column && visited[px+1][py]==0 && dist[px+1][py]>d){
+			if(px+1<column && visited[px+1][py]==0 && ary[px+1][py]!='F' && dist[px+1][py]>d){
 				visited[px+1][py] = 1;
 				dist[px+1][py] = d + 1;
 				bfsQ[i].push((px+1)*column+py);
 			}
-			if(py-1>=0 && visited[px][py-1]==0 && dist[px][py-1]>d){
+			if(py-1>=0 && visited[px][py-1]==0 && ary[px][py-1]!='F' && dist[px][py-1]>d){
 				visited[px][py-1] = 1;
 				dist[px][py-1] = d + 1;
 				bfsQ[i].push(px*column+py-1);
 			}
-			if(py+1<row && visited[px][py+1]==0 && dist[px][py+1]>d){
+			if(py+1<row && visited[px][py+1]==0 && ary[px][py+1]!='F' && dist[px][py+1]>d){
 				visited[px][py+1] = 1;
 				dist[px][py+1] = d + 1;
 				bfsQ[i].push(px*column+py+1);
 			}
 		}
 	}
-	for(int i=0;i<pCnt;i++)	cout << dist[pIndex[i]/column][pIndex[i]%column] << "\n";
+	for(int i=0;i<pCnt;i++){
+		if(dist[pIndex[i]/column][pIndex[i]%column] != INT_MAX) cout << dist[pIndex[i]/column][pIndex[i]%column];
+		else cout << "Died";
+		cout << "\n";
+	}
 }

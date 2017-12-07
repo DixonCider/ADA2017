@@ -5,36 +5,26 @@
 #include <list>
 using namespace std;
 
-int ary[100000] = {0};	// 1 odd, 2 even
-int even=0,odd=0,edge=0;
+bool ary[100000] = {0};	// 1 odd, 2 even
+bool cl[100000] = {0};
+unsigned long long pnt=0,edge=0;
 vector< list<int> >Alist(100000); 
 
-bool DFSvisit(int u, int color){
-	bool isReturn = false;
-	int nextColor;
-	if(color==1){
-		++odd;
-		nextColor = 2;
-	}
-	else{
-		++even;
-		nextColor = 1;
-	}
-	ary[u] = color;
-	list<int>::iterator itr = Alist[u].begin();
+bool DFSvisit(int u, bool color){
+	bool rn = false;
+	++pnt;
+	ary[u] = 1;
+	cl[u] = color;
 	
 	// true -> all, false -> no odd-even
-	while(itr!=Alist[u].end()){
+	for(list<int>::iterator itr = Alist[u].begin(); itr!=Alist[u].end(); ++itr){
 		++edge;
 		if(ary[*itr]==0){
-			if(DFSvisit(*itr,nextColor)==true) isReturn = true;
+			if(DFSvisit(*itr,!color)==true) rn = true;
 		}
-		else if(ary[*itr]==color){
-			isReturn = true;
-		}
-		++itr;
+		else if(cl[*itr]==color) rn  = true;
 	}
-	return isReturn;
+	return rn;
 }
 
 int main(){
@@ -42,11 +32,13 @@ int main(){
 	cin.tie(0);
 	int T;
 	cin >> T;
-	while(T--){
+	while(--T){
 		memset(ary,0,sizeof ary);
-		int N,M,TOTAL_ROAD=0,u,v;
+		memset(cl,0,sizeof cl);
+		unsigned long long TOTAL_ROAD = 0;
+		int N,M,u,v;
 		cin >> N >> M;
-		while(M--){
+		while(--M){
 			cin >> u >> v;
 			--u;--v;
 			Alist[u].push_back(v);
@@ -54,12 +46,12 @@ int main(){
 		}
 		// traverse
 		for(int i=0;i<N;++i){
-			even = 0; odd = 0; edge = 0;
+			pnt = 0; edge = 0;
 			if(ary[i]==0){
 				// all connected
-				if(DFSvisit(i,1)==true)	TOTAL_ROAD += ((odd+even)*(odd+even-1)-edge)/2;
+				if(DFSvisit(i,0)==true)	TOTAL_ROAD += (pnt*(pnt-1)-edge)/2;
 				// seperated
-				else TOTAL_ROAD += odd*even-edge/2;
+				else TOTAL_ROAD += (pnt/2)*(pnt/2+pnt%2)-edge/2;
 			}
 		}
 		cout << TOTAL_ROAD << "\n";

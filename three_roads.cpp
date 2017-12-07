@@ -22,12 +22,16 @@ bool DFSvisit(int u, int color){
 	}
 	ary[u] = color;
 	list<int>::iterator itr = Alist[u].begin();
-
+	
 	// true -> all, false -> no odd-even
 	while(itr!=Alist[u].end()){
 		++edge;
-		if(ary[*itr]==0 && DFSvisit(*itr,nextColor)==true) isReturn = true;
-		else if(ary[*itr]==color) isReturn = true;
+		if(ary[*itr]==0){
+			if(DFSvisit(*itr,nextColor)==true) isReturn = true;
+		}
+		else if(ary[*itr]==color){
+			isReturn = true;
+		}
 		++itr;
 	}
 	return isReturn;
@@ -39,7 +43,7 @@ int main(){
 	int T;
 	cin >> T;
 	while(T--){
-		memset(ary,0,sizeof(ary));
+		memset(ary,0,sizeof ary);
 		int N,M,TOTAL_ROAD=0,u,v;
 		cin >> N >> M;
 		while(M--){
@@ -53,7 +57,7 @@ int main(){
 			even = 0; odd = 0; edge = 0;
 			if(ary[i]==0){
 				// all connected
-				if(DFSvisit(i,1)==true) TOTAL_ROAD += ((odd+even)*(odd+even-1)-edge)/2;
+				if(DFSvisit(i,1)==true)	TOTAL_ROAD += ((odd+even)*(odd+even-1)-edge)/2;
 				// seperated
 				else TOTAL_ROAD += odd*even-edge/2;
 			}
@@ -62,3 +66,4 @@ int main(){
 		for(int i=0;i<N;i++) Alist[i].clear();
 	}
 }
+

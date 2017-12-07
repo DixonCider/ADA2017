@@ -15,14 +15,16 @@ bool DFSvisit(int u, bool color){
 	++pnt;
 	ary[u] = 1;
 	cl[u] = color;
-	
+	list<int>::iterator itr = Alist[u].begin();
 	// true -> all, false -> no odd-even
-	for(list<int>::iterator itr = Alist[u].begin(); itr!=Alist[u].end(); ++itr){
+	// for(list<int>::iterator itr = Alist[u].begin(); itr!=Alist[u].end(); ++itr){
+	while(itr!=Alist[u].end()){
 		++edge;
 		if(ary[*itr]==0){
 			if(DFSvisit(*itr,!color)==true) rn = true;
 		}
 		else if(cl[*itr]==color) rn  = true;
+		++itr;
 	}
 	return rn;
 }
@@ -32,13 +34,12 @@ int main(){
 	cin.tie(0);
 	int T;
 	cin >> T;
-	while(--T){
+	while(T--){
 		memset(ary,0,sizeof ary);
-		memset(cl,0,sizeof cl);
 		unsigned long long TOTAL_ROAD = 0;
 		int N,M,u,v;
 		cin >> N >> M;
-		while(--M){
+		while(M--){
 			cin >> u >> v;
 			--u;--v;
 			Alist[u].push_back(v);
@@ -46,8 +47,8 @@ int main(){
 		}
 		// traverse
 		for(int i=0;i<N;++i){
-			pnt = 0; edge = 0;
 			if(ary[i]==0){
+				pnt = 0; edge = 0;
 				// all connected
 				if(DFSvisit(i,0)==true)	TOTAL_ROAD += (pnt*(pnt-1)-edge)/2;
 				// seperated

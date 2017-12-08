@@ -5,8 +5,7 @@
 #include <string.h>
 using namespace std;
 
-bool visited[100000] = {0};
-bool cl[100000] = {0};	// color array
+int visited[100000] = {0};
 vector< list<int> >Alist(100000);
 stack<int>dfs;
 
@@ -31,31 +30,29 @@ int main(){
 		// traverse
 		for(int i=0;i<N;++i){
 			if(visited[i]==0){
-				unsigned long long pnt = 0,edge = 0;
+				unsigned long long even = 0,edge = 0,odd=0;
 				bool isOddCycle = false;	// if odd cycle exist -> true
 				// push in source node
 				dfs.push(i);
-				cl[i] = 0;
+				visited[i] = 1;
 				while(!dfs.empty()){
 					int u = dfs.top();
 					dfs.pop();
-					if(!visited[u]){
-						visited[u] = true;
-						++pnt;
-						for(list<int>::iterator itr = Alist[u].begin(); itr!=Alist[u].end(); ++itr){
-							if(visited[*itr]==0){
-								++edge;
-								dfs.push(*itr);
-								cl[*itr] = !cl[u];
-							}
-							// determine odd cycle
-							else if(cl[*itr]==cl[u]) isOddCycle = true;
+					if(visited[u]==1) ++even;
+					else ++odd;
+					for(list<int>::iterator itr = Alist[u].begin(); itr!=Alist[u].end(); ++itr){
+						++edge;
+						if(visited[*itr]==0){
+							dfs.push(*itr);
+							visited[*itr] = -visited[u];
 						}
+						// determine odd cycle
+						else if(visited[*itr]==visited[u]) isOddCycle = true;
 					}
 				}
-				if(isOddCycle) TOTAL_ROAD += pnt*(pnt-1)/2-edge;
-				else TOTAL_ROAD += (pnt/2)*(pnt/2+pnt%2)-edge;
-				cout << " OddCycle->" << isOddCycle << " pnt " << pnt << " edge " << edge << endl;
+				if(isOddCycle) TOTAL_ROAD += ((even+odd)*(even+odd-1)-edge)/2;
+				else TOTAL_ROAD += even*odd-edge/2;
+				// cout << " OddCycle->" << isOddCycle << " pnt " << pnt << " edge " << edge << endl;
 			}
 		}
 		cout << TOTAL_ROAD << "\n";

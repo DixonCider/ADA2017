@@ -5,9 +5,9 @@
 #include <string.h>
 using namespace std;
 
-bool visited[100000] = {0};	// 1 odd, 2 even
-bool cl[100000] = {0};
-vector< list<int> >Alist(100000); 
+bool visited[100000] = {0};
+bool cl[100000] = {0};	// color array
+vector< list<int> >Alist(100000);
 stack<int>dfs;
 
 int main(){
@@ -16,9 +16,11 @@ int main(){
 	int T;
 	cin >> T;
 	while(T--){
+		// reset visited array
 		memset(visited,0,sizeof visited);
 		unsigned long long TOTAL_ROAD = 0;
 		int N,M,u,v;
+		// read data
 		cin >> N >> M;
 		while(M--){
 			cin >> u >> v;
@@ -30,7 +32,8 @@ int main(){
 		for(int i=0;i<N;++i){
 			if(visited[i]==0){
 				unsigned long long pnt = 0,edge = 0;
-				bool isAll = false;
+				bool isOddCycle = false;	// if odd cycle exist -> true
+				// push in source node
 				dfs.push(i);
 				cl[i] = 0;
 				while(!dfs.empty()){
@@ -45,16 +48,18 @@ int main(){
 								dfs.push(*itr);
 								cl[*itr] = !cl[u];
 							}
-							else if(isAll==false && cl[*itr]==cl[u]) isAll = true;
+							// determine odd cycle
+							else if(cl[*itr]==cl[u]) isOddCycle = true;
 						}
 					}
 				}
-				if(isAll) TOTAL_ROAD += pnt*(pnt-1)/2-edge;
+				if(isOddCycle) TOTAL_ROAD += pnt*(pnt-1)/2-edge;
 				else TOTAL_ROAD += (pnt/2)*(pnt/2+pnt%2)-edge;
-				//cout << " isAll " << isAll << " pnt " << pnt << " edge " << edge << endl;
+				cout << " OddCycle->" << isOddCycle << " pnt " << pnt << " edge " << edge << endl;
 			}
 		}
 		cout << TOTAL_ROAD << "\n";
+		// reset adjacency list
 		for(int i=0;i<N;i++) Alist[i].clear();
 	}
 }

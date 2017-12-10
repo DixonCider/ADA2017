@@ -3,10 +3,11 @@
 #include <list>
 #include <stack>
 #include <string.h>
+#include <deque>
 using namespace std;
 
+// vector< list<int> >Alist(100000);
 int visited[100000] = {0};
-vector< list<int> >Alist(100000);
 stack<int>dfs;
 
 int main(){
@@ -21,6 +22,7 @@ int main(){
 		int N,M,u,v;
 		// read data
 		cin >> N >> M;
+ 		vector< vector<int> >Alist(N);
 		while(M--){
 			cin >> u >> v;
 			--u;--v;
@@ -40,7 +42,7 @@ int main(){
 					dfs.pop();
 					if(visited[u]==1) ++even;
 					else ++odd;
-					for(list<int>::iterator itr = Alist[u].begin(); itr!=Alist[u].end(); ++itr){
+					for(vector<int>::iterator itr = Alist[u].begin(); itr!=Alist[u].end(); ++itr){
 						++edge;
 						if(visited[*itr]==0){
 							dfs.push(*itr);
@@ -57,6 +59,6 @@ int main(){
 		}
 		cout << TOTAL_ROAD << "\n";
 		// reset adjacency list
-		for(int i=0;i<N;i++) Alist[i].clear();
+		// for(int i=0;i<N;i++) Alist[i].clear();
 	}
 }

@@ -30,7 +30,7 @@ int main(){
 		--cnt_sort[card[i]];
 	}
 	// check N = 3
-	if(MAX_SIZE==2){
+	if(MAX_SIZE==2 && MAX_CARD>=2){
 		for(int ii=0;ii<N;++ii){
 			int i = sorted[ii];
 			//cout << "card" << card[i] << endl;
@@ -55,8 +55,38 @@ int main(){
 			if(MAX_SIZE==3) break;
 		}
 	}
-	if(MAX_SIZE==3){
-		
+	// check N = 4
+	if(MAX_SIZE==3 && MAX_CARD>=3){
+		for(int node=0;node<N;++node){
+			int i = sorted[node];
+			if(card[i]>=3){
+				bool neighbor[200000] = {0};	// neighbor with p1
+				list<int>::iterator itr, itr1, itr2;
+				for(itr = Alist[i].begin(); itr!=Alist[i].end(); ++itr) neighbor[*itr] = true;
+				// find k3 in neighbor
+				for(int j=0; j<200000; ++j){
+					if(neighbor[j]==false) continue;
+					bool neighbor_1[200000] = {0};	// neighbor with p1(i) & p2(j)
+					for(itr1 = Alist[j].begin(); itr1!=Alist[j].end(); ++itr1){
+						if(neighbor[*itr1]==true) neighbor_1[*itr1] = true;
+					}
+					// itr1 is neighbor of p2
+					for(itr1 = Alist[j].begin(); itr1!=Alist[j].end(); ++itr1){
+						if(neighbor_1[*itr1]==false) continue;	// p3(*itr1)
+						// itr2 is neighbor of p3
+						for(itr2 = Alist[*itr1].begin(); itr2!=Alist[*itr1].end(); ++itr2){
+							if(neighbor_1[*itr2]==true){
+								MAX_SIZE = 4;
+								break;
+							}
+						}
+						if(MAX_SIZE==4) break;
+					}
+					if(MAX_SIZE==4) break;
+				}
+			}
+			if(MAX_SIZE==4) break;
+		}
 	}
 	cout << MAX_SIZE << endl;
 }

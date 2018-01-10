@@ -3,11 +3,13 @@
 #include <string.h>
 using namespace std;
 
-struct set{int s[100]; int size;};
+struct set{int s[101]; int size;};
+set SETBAG[1000];
+int Scnt = 0;
 
-bool adjM[100][100] = {0};
+bool adjM[101][101] = {0};
 int N;
-int deg[100] = {0};
+int deg[101] = {0};
 int Q=0, Qmax=0;
 
 void colorSort(set* R, set* C){
@@ -15,9 +17,10 @@ void colorSort(set* R, set* C){
 	int kmin = Qmax - Q + 1;
 	if(kmin <= 0) kmin = 1;
 	int j = 0;
-	vector<set>color(2);
+	vector<set>color(3);
 	color[0].size = 0;
 	color[1].size = 0;
+	color[2].size = 0;
 	for(int i=0;i<R->size;++i){
 		int p = R->s[i];
 		int k = 1;
@@ -48,7 +51,7 @@ void colorSort(set* R, set* C){
 			++j;
 		}
 	}
-	C->s[j-1] = 0;
+	// C->s[j-1] = 0;
 	// cout << kmin << max_no << color.size();
 	for(int k=kmin;k<=max_no;++k){
 		for(int i=0;i<color[k].size;++i){
@@ -58,32 +61,32 @@ void colorSort(set* R, set* C){
 			++j;
 		}
 	}
-	// for(int i=0;i<N;++i) cout << R->s[i] << endl;
-	// for(int kk=0;kk<C->size;++kk) cout << C->s[kk] << endl;
-	// cout << endl;
 }
 
-void maxClq(set R, set C){
-	while(R.size!=0){
+void maxClq(set* R, set* C){
+	while(R->size!=0){
 		// choose a vertex p from set R (last)
-		int p = R.s[R.size-1];
+		int p = R->s[R->size-1];
 		// remove p from R
-		--R.size;
-		--C.size;
+		--R->size;
+		--C->size;
 		// for(int JJ=0;JJ<C.size;++JJ) cout << C.s[JJ] << endl;
-		if(Q + C.s[C.size] > Qmax){
+		if(Q + C->s[C->size] > Qmax){
 			// add p to Q
 			++Q;
 			// find union of R and p.neighbor -> Randp
 			bool isUnion = false;
-			set Randp,Cnew;
+			set Randp = SETBAG[Scnt];
+			++Scnt;
+			set Cnew = SETBAG[Scnt];
+			++Scnt;
 			Randp.size = 0;
 			Cnew.size = 0;
-			for(int i=0;i<R.size;++i){
+			for(int i=0;i<R->size;++i){
 				// cout << adjM[p][R.s[i]] << "p " << p << "R.s " << R.s[i] << endl;
-				if(adjM[p][R.s[i]]){
+				if(adjM[p][R->s[i]]){
 					isUnion = true;
-					Randp.s[Randp.size] = R.s[i];
+					Randp.s[Randp.size] = R->s[i];
 					Cnew.s[Cnew.size] = 0;
 					++Randp.size;
 					++Cnew.size;
@@ -92,15 +95,19 @@ void maxClq(set R, set C){
 			// backtrack if common neighbor exist
 			if(isUnion){
 				colorSort(&Randp,&Cnew);
-				maxClq(Randp,Cnew);
+				maxClq(&Randp,&Cnew);
 			}
 			// update Qmax
 			Qmax = max(Q,Qmax);
 			// delete p from Q
 			--Q;
 		}
-		else return;
+		else{ 
+			Scnt-=2;
+			return;
+		}
 	}
+	Scnt-=2;
 }
 
 int main(){
@@ -120,7 +127,7 @@ int main(){
 	C.size = N;
 	R.size = N;
 	// sort R by degree
-	int cnt_sort[100] = {0};
+	int cnt_sort[101] = {0};
 	for(int i=0;i<N;++i) ++cnt_sort[deg[i]];
     for(int i=1;i<N;++i) cnt_sort[i]+=cnt_sort[i-1];
     for(int i=0;i<N;++i){
@@ -133,6 +140,6 @@ int main(){
 	// sort R by color, record in c
 	colorSort(&R,&C);
 	// driver
-	maxClq(R,C);
+	maxClq(&R,&C);
 	cout << Qmax;
 }
